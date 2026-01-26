@@ -5,6 +5,7 @@ import java.util.List;
 
 import es.etg.daw.dawes.jsp.productos.domain.model.Producto;
 import es.etg.daw.dawes.jsp.productos.domain.model.ProductoId;
+import es.etg.daw.dawes.jsp.productos.infraestructure.api.dto.ProductoRequest;
 import es.etg.daw.dawes.jsp.productos.infraestructure.api.dto.ProductoResponse;
 
 public class ProductoMapper {
@@ -20,4 +21,11 @@ public class ProductoMapper {
     public static Producto toDomain(ProductoResponse p){
         return new Producto(new ProductoId(p.getId()), p.getNombre(), p.getPrecio());
     }
+
+    public static ProductoRequest toRequest(Producto producto) {
+        return new ProductoRequest(1,
+				producto.getNombre(),
+				producto.getPrecio());
+    }
+
 }

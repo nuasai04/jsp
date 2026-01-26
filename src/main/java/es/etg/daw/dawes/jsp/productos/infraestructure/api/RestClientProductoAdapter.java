@@ -4,17 +4,20 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import es.etg.daw.dawes.jsp.productos.domain.model.Producto;
 import es.etg.daw.dawes.jsp.productos.domain.model.ProductoId;
 import es.etg.daw.dawes.jsp.productos.domain.repository.ProductoRepository;
+import es.etg.daw.dawes.jsp.productos.infraestructure.api.dto.ProductoRequest;
 import es.etg.daw.dawes.jsp.productos.infraestructure.api.dto.ProductoResponse;
 import es.etg.daw.dawes.jsp.productos.infraestructure.mapper.ProductoMapper;
 import lombok.AllArgsConstructor;
 
-@Component
+@Service
 @AllArgsConstructor
 public class RestClientProductoAdapter implements ProductoRepository {
 
@@ -30,8 +33,16 @@ public class RestClientProductoAdapter implements ProductoRepository {
 
     @Override
     public Producto save(Producto t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+        ProductoRequest nuevo = ProductoMapper.toRequest(t);
+
+        ProductoResponse respuesta = restClient.post()
+                .contentType(MediaType.APPLICATION_JSON) // Le mandamos un Json
+                .body(nuevo) // Los datos de producto a crear
+                .retrieve() // Obtenermos los datos
+                .body(new ParameterizedTypeReference<ProductoResponse>() {
+                }); // Los pasamos a una respuesta de tipo Producto
+
+        return ProductoMapper.toDomain(respuesta);
     }
 
     @Override
